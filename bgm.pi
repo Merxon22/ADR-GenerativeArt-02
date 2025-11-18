@@ -1,0 +1,41 @@
+bass_note_structure = (ring :e2, :g2, :a2, :c3)
+melody_rhythm_structure = (ring 0.25, 0.5)
+melody_note_structure = (scale :e3, :minor_pentatonic, num_octaves: 2)
+
+live_loop :bass_line do
+	with_fx :slicer do
+		with_fx :wobble do
+			use_synth :beep
+			play bass_note_structure.tick, amp: 0.6, release: 1
+			sleep 1
+		end
+	end
+end
+
+live_loop :march do
+	with_fx :reverb, room: 0.8 do
+		sample :elec_flip
+		sleep melody_rhythm_structure.tick
+	end
+end
+
+live_loop :melody do
+	with_fx :reverb, room: 0.2 do
+		with_fx :octaver do
+			with_fx :echo, phase: 0.375, decay: 1 do
+				use_synth :fm
+				play melody_note_structure.choose, amp: 0.2, release: 0.5
+				sleep rrand_i(1, 4) * 0.25
+			end
+		end
+	end
+end
+
+live_loop :drums do
+	with_fx :distortion, distort: 0.4 do
+		sample :bd_haus, amp: 0.3
+		sleep 0.5
+		sample :sn_dub, amp: 0.1
+		sleep 0.5
+	end
+end
